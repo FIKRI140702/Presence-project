@@ -21,7 +21,11 @@ class LoginController extends GetxController {
 
         if (user != null) {
           if (user.emailVerified) {
-            Get.offAllNamed(Routes.HOME);
+            if (passC.text == "password") {
+              Get.offAllNamed(Routes.NEW_PASSWORD);
+            } else {
+              Get.offAllNamed(Routes.HOME);
+            }
           } else {
             Get.defaultDialog(
               title: "Belum Verifikasi",
