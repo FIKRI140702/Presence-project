@@ -11,7 +11,7 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('LoginView'),
+          title: const Text('Login'),
           centerTitle: true,
         ),
         body: ListView(
@@ -20,16 +20,16 @@ class LoginView extends GetView<LoginController> {
             TextField(
               autocorrect: false,
               controller: controller.emailC,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Email",
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextField(
               controller: controller.passC,
               obscureText: true,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "Password",
                 border: OutlineInputBorder(),
               ),
@@ -43,7 +43,7 @@ class LoginView extends GetView<LoginController> {
             ),
             TextButton(
               onPressed: () {},
-              child: Text("Lupa Password ?"),
+              child: const Text("Lupa Password ?"),
             ),
           ],
         ));

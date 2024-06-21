@@ -7,23 +7,24 @@ class AddPegawaiController extends GetxController {
   TextEditingController nameC = TextEditingController();
   TextEditingController nipC = TextEditingController();
   TextEditingController emailC = TextEditingController();
+  TextEditingController passAdminC = TextEditingController();
 
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  void AddPegawai() async {
-    if (nameC.text.isNotEmpty &&
-        nipC.text.isNotEmpty &&
-        emailC.text.isNotEmpty) {
+  Future<void> prosesAddPegawai() async {
+    if (passAdminC.text.isNotEmpty) {
       try {
-        final UserCredential credential =
+        String emailAdmin = auth.currentUser!.email!;
+
+        final UserCredential pegawaiCredential =
             await auth.createUserWithEmailAndPassword(
           email: emailC.text,
           password: "password",
         );
 
-        if (credential.user != null) {
-          String uid = credential.user!.uid;
+        if (pegawaiCredential.user != null) {
+          String uid = pegawaiCredential.user!.uid;
 
           await firestore.collection("pegawai").doc(uid).set({
             "nip": nipC.text,
@@ -33,9 +34,18 @@ class AddPegawaiController extends GetxController {
             "createdAt": DateTime.now().toIso8601String(),
           });
 
-          credential.user!.sendEmailVerification();
+          await pegawaiCredential.user!.sendEmailVerification();
 
-          Get.snackbar("Berhasil", "Pegawai berhasil ditambahkan.");
+          await auth.signOut();
+
+          await auth.signInWithEmailAndPassword(
+            email: emailAdmin,
+            password: passAdminC.text,
+          );
+
+          Get.back(); // tutup dialog
+          Get.back(); // back to home
+          Get.snackbar("Berhasil", "Berhasil menambahkan pegawai");
         }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'weak-password') {
@@ -43,11 +53,53 @@ class AddPegawaiController extends GetxController {
               "Terjadi Kesalahan", "Password yang digunakan terlalu singkat");
         } else if (e.code == 'email-already-in-use') {
           Get.snackbar("Terjadi Kesalahan",
-              "Pegawai sudah ada, Anda tidak dapat menambahkan pegawai dengan akun ini.");
+              "Pegawai sudah ada. Kamu tidak dapat menambahkan pegawai dengan email ini");
+        } else if (e.code == 'wrong-password') {
+          Get.snackbar(
+              "Terjadi Kesalahan", "Admin tidak dapat login. Password salah!");
+        } else {
+          // ignore: unnecessary_string_interpolations
+          Get.snackbar("Terjadi Kesalahan", "${e.code}");
         }
       } catch (e) {
         Get.snackbar("Terjadi Kesalahan", "Tidak dapat menambahkan pegawai.");
       }
+    } else {
+      Get.snackbar(
+          "Terjadi Kesalahan", "Password wajib diisi untuk keperluan validasi");
+    }
+  }
+
+  void addPegawai() async {
+    if (nameC.text.isNotEmpty &&
+        nipC.text.isNotEmpty &&
+        emailC.text.isNotEmpty) {
+      Get.defaultDialog(
+        title: "Validasi Admin",
+        content: Column(
+          children: [
+            const Text("Masukkan password untuk validasi admin!"),
+            TextField(
+              controller: passAdminC,
+              autocorrect: false,
+              obscureText: true,
+              decoration: const InputDecoration(),
+            ),
+          ],
+        ),
+        actions: [
+          OutlinedButton(
+            onPressed: () => Get.back(),
+            child: const Text("CANCEL"),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              await prosesAddPegawai();
+            },
+            child: const Text("ADD PEGAWAI"),
+          ),
+        ],
+      );
     } else {
       Get.snackbar("Terjadi Kesalahan", "NIP, nama, dan email harus diisi.");
     }

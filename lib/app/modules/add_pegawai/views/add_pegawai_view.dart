@@ -43,7 +43,7 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
           SizedBox(height: 30),
           ElevatedButton(
             onPressed: () {
-              controller.AddPegawai();
+              controller.addPegawai();
             },
             child: Text("ADD PEGAWAI"),
           ),

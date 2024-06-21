@@ -1,4 +1,5 @@
 import 'package:device_preview/device_preview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -12,12 +13,25 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(
-    DevicePreview(
-      builder: (contex) => GetMaterialApp(
-        title: "Application",
-        initialRoute: Routes.LOGIN,
-        getPages: AppPages.routes,
-      ),
-    ),
+    StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshoot) {
+          if (snapshoot.connectionState == ConnectionState.waiting) {
+            return MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          }
+          return DevicePreview(
+            builder: (contex) => GetMaterialApp(
+              title: "Application",
+              initialRoute: snapshoot.data != null ? Routes.HOME : Routes.LOGIN,
+              getPages: AppPages.routes,
+            ),
+          );
+        }),
   );
 }
