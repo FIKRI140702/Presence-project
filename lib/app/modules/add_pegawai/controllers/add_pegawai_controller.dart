@@ -97,7 +97,7 @@ class AddPegawaiController extends GetxController {
         content: Column(
           children: [
             const Text("Masukkan password untuk validasi admin!"),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             TextField(
               controller: passAdminC,
               autocorrect: false,
