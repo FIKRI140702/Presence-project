@@ -18,7 +18,7 @@ class ProfileView extends GetView<ProfileController> {
         stream: controller.Streamuser(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
@@ -42,49 +42,49 @@ class ProfileView extends GetView<ProfileController> {
                     )
                   ],
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Text(
                   "${user['name'].toString().toUpperCase()}",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 20,
                   ),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
                   "${user['email']}",
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ListTile(
                   onTap: () =>
                       Get.toNamed(Routes.UPDATE_PROFILE, arguments: user),
-                  leading: Icon(Icons.person),
-                  title: Text("Update Profile"),
+                  leading: const Icon(Icons.person),
+                  title: const Text("Update Profile"),
                 ),
                 ListTile(
                   onTap: () => Get.toNamed(Routes.UPDATE_PASSWORD),
-                  leading: Icon(Icons.vpn_key),
-                  title: Text("Update Password"),
+                  leading: const Icon(Icons.vpn_key),
+                  title: const Text("Update Password"),
                 ),
                 if (user["role"] == "admin")
                   ListTile(
                     onTap: () => Get.toNamed(Routes.UPDATE_PASSWORD),
-                    leading: Icon(Icons.person_add),
-                    title: Text("Add Pegawai"),
+                    leading: const Icon(Icons.person_add),
+                    title: const Text("Add Pegawai"),
                   ),
                 ListTile(
                   onTap: () => controller.logout(),
-                  leading: Icon(Icons.logout),
-                  title: Text("Logout"),
+                  leading: const Icon(Icons.logout),
+                  title: const Text("Logout"),
                 ),
               ],
             );
           } else {
-            return Center(
+            return const Center(
               child: Text("Tidak dapat memuat data user."),
             );
           }
