@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import 'package:get/get.dart';
 
@@ -11,7 +10,7 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Login'),
+          title: const Text('LOGIN'),
           centerTitle: true,
         ),
         body: ListView(
@@ -35,11 +34,16 @@ class LoginView extends GetView<LoginController> {
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                controller.login();
-              },
-              child: const Text("LOGIN"),
+            Obx(
+              () => ElevatedButton(
+                onPressed: () async {
+                  if (controller.isLoading.isFalse) {
+                    await controller.login();
+                  }
+                },
+                child:
+                    Text(controller.isLoading.isFalse ? "LOGIN" : "LOADING..."),
+              ),
             ),
             TextButton(
               onPressed: () {},

@@ -10,27 +10,27 @@ class NewPasswordView extends GetView<NewPasswordController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NewPassword'),
+        title: const Text('NEW PASSWORD'),
         centerTitle: true,
       ),
       body: ListView(
-        padding: EdgeInsets.all(20),
+        padding: const EdgeInsets.all(20),
         children: [
           TextField(
             autocorrect: false,
-            obscureText: true,
             controller: controller.newPassC,
-            decoration: InputDecoration(
+            obscureText: true,
+            decoration: const InputDecoration(
               labelText: "New Password",
               border: OutlineInputBorder(),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               controller.newPassword();
             },
-            child: Text("CONTINUE"),
+            child: const Text("CONTINUE"),
           ),
         ],
       ),
