@@ -1,13 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:presence/app/routes/app_pages.dart';
-
 import '../controllers/home_controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,9 +15,9 @@ class HomeView extends GetView<HomeController> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () => Get.toNamed(Routes.ADD_PEGAWAI),
+            onPressed: () => Get.toNamed(Routes.PROFILE),
             icon: const Icon(Icons.person),
-          ),
+          )
         ],
       ),
       body: const Center(
@@ -31,14 +30,17 @@ class HomeView extends GetView<HomeController> {
         () => FloatingActionButton(
           onPressed: () async {
             if (controller.isLoading.isFalse) {
-              controller.isLoading.value = false;
+              controller.isLoading.value = true;
               await FirebaseAuth.instance.signOut();
+              controller.isLoading.value = false;
               Get.offAllNamed(Routes.LOGIN);
             }
           },
           child: controller.isLoading.isFalse
               ? const Icon(Icons.logout)
-              : const CircularProgressIndicator(),
+              : const CircularProgressIndicator(
+                  color: Colors.white,
+                ),
         ),
       ),
     );
