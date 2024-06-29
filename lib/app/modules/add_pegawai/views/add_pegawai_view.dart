@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/add_pegawai_controller.dart';
 
 class AddPegawaiView extends GetView<AddPegawaiController> {
-  const AddPegawaiView({Key? key}) : super(key: key);
+  const AddPegawaiView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

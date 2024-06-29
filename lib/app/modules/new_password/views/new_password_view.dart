@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import '../controllers/new_password_controller.dart';
 
 class NewPasswordView extends GetView<NewPasswordController> {
-  const NewPasswordView({Key? key}) : super(key: key);
+  const NewPasswordView({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(

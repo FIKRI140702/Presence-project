@@ -1,8 +1,10 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:get/get.dart';
 import 'package:firebase_storage/firebase_storage.dart' as s;
 
 class UpdateProfileController extends GetxController {
@@ -12,6 +14,7 @@ class UpdateProfileController extends GetxController {
   TextEditingController emailC = TextEditingController();
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
   s.FirebaseStorage storage = s.FirebaseStorage.instance;
 
   final ImagePicker picker = ImagePicker();
@@ -20,21 +23,17 @@ class UpdateProfileController extends GetxController {
 
   void pickImage() async {
     image = await picker.pickImage(source: ImageSource.gallery);
-    if (image != null) {
-      print(image!.name);
-      print(image!.name.split(".").last);
-      print(image!.path);
-    } else {
-      print("No image selected");
-    }
+
     update();
   }
 
-  Future<void> updateProfile(String uid) async {
+  Future<void> updateProfile() async {
+    String uid = auth.currentUser!.uid;
     if (nipC.text.isNotEmpty &&
         nameC.text.isNotEmpty &&
         emailC.text.isNotEmpty) {
       isLoading.value = true;
+
       try {
         Map<String, dynamic> data = {
           "name": nameC.text,
@@ -55,9 +54,10 @@ class UpdateProfileController extends GetxController {
         }
 
         await firestore.collection("pegawai").doc(uid).update(data);
-        Get.snackbar("Berhasil", "Berhasil Update Profile.");
+        image = null;
+        Get.snackbar("Berhasil", "Berhasil update profile");
       } catch (e) {
-        Get.snackbar("Terjadi Kesalahan", "Tidak dapat update profile.");
+        Get.snackbar("Terjadi Kesalahan", "Tidak dapat update profile");
       } finally {
         isLoading.value = false;
       }
@@ -66,7 +66,7 @@ class UpdateProfileController extends GetxController {
 
   void deleteProfile(String uid) async {
     try {
-      firestore.collection("pegawai").doc(uid).update({
+      await firestore.collection("pegawai").doc(uid).update({
         "profile": FieldValue.delete(),
       });
 
