@@ -36,7 +36,7 @@ class LoginController extends GetxController {
                     isLoading.value = false;
                     Get.back();
                   },
-                  child: Text("CANCEL"),
+                  child: const Text("CANCEL"),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -52,7 +52,7 @@ class LoginController extends GetxController {
                           "Tidak dapat mengirim email verifikasi. Hubungi admin atau customer service");
                     }
                   },
-                  child: Text("KIRIM ULANG"),
+                  child: const Text("KIRIM ULANG"),
                 ),
               ],
             );

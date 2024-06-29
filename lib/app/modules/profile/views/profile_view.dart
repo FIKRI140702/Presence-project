@@ -35,7 +35,8 @@ class ProfileView extends GetView<ProfileController> {
                         width: 100,
                         height: 100,
                         child: Image.network(
-                          "https://ui-avatars.com/api/?name=${user['name']}",
+                          user["profile"] ??
+                              "https://ui-avatars.com/api/?name=${user['name']}",
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -72,7 +73,7 @@ class ProfileView extends GetView<ProfileController> {
                 ),
                 if (user["role"] == "admin")
                   ListTile(
-                    onTap: () => Get.toNamed(Routes.UPDATE_PASSWORD),
+                    onTap: () => Get.toNamed(Routes.ADD_PEGAWAI),
                     leading: const Icon(Icons.person_add),
                     title: const Text("Add Pegawai"),
                   ),
