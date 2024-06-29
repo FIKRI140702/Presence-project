@@ -37,8 +37,6 @@ class UpdateProfileController extends GetxController {
       try {
         Map<String, dynamic> data = {
           "name": nameC.text,
-          "nip": nipC.text,
-          "email": emailC.text,
         };
 
         if (image != null) {
