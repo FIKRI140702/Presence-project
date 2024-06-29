@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:presence/app/controllers/page_index_controller.dart';
 import 'firebase_options.dart';
 import 'package:get/get.dart';
 
@@ -11,11 +12,20 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(
-    StreamBuilder<User?>(
+
+  // Ensure PageIndexController is available globally
+  final pageC = Get.put(PageIndexController(), permanent: true);
+
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshoot) {
-        if (snapshoot.connectionState == ConnectionState.waiting) {
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const MaterialApp(
             home: Scaffold(
               body: Center(
@@ -24,12 +34,13 @@ void main() async {
             ),
           );
         }
-        return  GetMaterialApp(
-            title: "Application",
-            initialRoute: snapshoot.data != null ? Routes.HOME : Routes.LOGIN,
-            getPages: AppPages.routes,
+
+        return GetMaterialApp(
+          title: "Application",
+          initialRoute: snapshot.data != null ? Routes.HOME : Routes.LOGIN,
+          getPages: AppPages.routes,
         );
       },
-    ),
-  );
+    );
+  }
 }

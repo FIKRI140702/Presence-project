@@ -1,11 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:presence/app/routes/app_pages.dart';
 import '../controllers/profile_controller.dart';
+import '../../../controllers/page_index_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
-  const ProfileView({super.key});
+  ProfileView({super.key});
+
+  final pageC = Get.find<PageIndexController>();
 
   @override
   Widget build(BuildContext context) {
@@ -22,8 +26,14 @@ class ProfileView extends GetView<ProfileController> {
               child: CircularProgressIndicator(),
             );
           }
+
           if (snapshot.hasData) {
-            Map<String, dynamic> user = snapshot.data!.data()!;
+            Map<String, dynamic>? user = snapshot.data?.data();
+            if (user == null) {
+              return const Center(
+                child: Text("Tidak dapat memuat data user."),
+              );
+            }
             return ListView(
               padding: const EdgeInsets.all(20),
               children: [
@@ -40,12 +50,12 @@ class ProfileView extends GetView<ProfileController> {
                           fit: BoxFit.cover,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "${user['name'].toString().toUpperCase()}",
+                  "${user['name']}".toUpperCase(),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 20,
@@ -90,6 +100,16 @@ class ProfileView extends GetView<ProfileController> {
             );
           }
         },
+      ),
+      bottomNavigationBar: ConvexAppBar(
+        style: TabStyle.fixedCircle,
+        items: const [
+          TabItem(icon: Icons.home, title: 'Home'),
+          TabItem(icon: Icons.fingerprint, title: 'Add'),
+          TabItem(icon: Icons.person, title: 'Profile'),
+        ],
+        initialActiveIndex: pageC.pageIndex.value,
+        onTap: (int i) => pageC.changePage(i),
       ),
     );
   }
