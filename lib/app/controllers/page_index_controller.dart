@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:presence/app/routes/app_pages.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -24,7 +25,10 @@ class PageIndexController extends GetxController {
           String address =
               "${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}";
           await updatePosition(position, address);
-          Get.snackbar("${dataResponse['message']}", address);
+
+          await presensi(position, address);
+
+          Get.snackbar("Berhasil", "Kamu telah mengisi daftar hadir");
         } else {
           Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
         }
@@ -36,6 +40,36 @@ class PageIndexController extends GetxController {
       default:
         pageIndex.value = i;
         Get.offAllNamed(Routes.HOME);
+    }
+  }
+
+  Future<void> presensi(Position position, String address) async {
+    String uid = await auth.currentUser!.uid;
+
+    CollectionReference<Map<String, dynamic>> colPresence =
+        await firestore.collection("pegawai").doc(uid).collection("presence");
+
+    QuerySnapshot<Map<String, dynamic>> snapPresence = await colPresence.get();
+
+    DateTime now = DateTime.now();
+    String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
+
+    print(todayDocID);
+    if (snapPresence.docs.length == 0) {
+      //belum pernah absen & set absen masuk
+
+      await colPresence.doc(todayDocID).set({
+        "date": now.toIso8601String(),
+        "masuk": {
+          "date": now.toIso8601String(),
+          "lat": position.latitude,
+          "long": position.longitude,
+          "address": address,
+          "status": "Di dalam area",
+        }
+      });
+    } else {
+      //sudah pernah absen -> cek hari ini sudah absen masuk/keluar blm?
     }
   }
 
