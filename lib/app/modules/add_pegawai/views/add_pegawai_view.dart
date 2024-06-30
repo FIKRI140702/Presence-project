@@ -20,7 +20,7 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
             autocorrect: false,
             controller: controller.nipC,
             decoration: const InputDecoration(
-              labelText: "NIP",
+              labelText: "nip",
               border: OutlineInputBorder(),
             ),
           ),
@@ -30,6 +30,15 @@ class AddPegawaiView extends GetView<AddPegawaiController> {
             controller: controller.nameC,
             decoration: const InputDecoration(
               labelText: "Nama",
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            autocorrect: false,
+            controller: controller.JobC,
+            decoration: const InputDecoration(
+              labelText: "Job",
               border: OutlineInputBorder(),
             ),
           ),

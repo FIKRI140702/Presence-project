@@ -13,7 +13,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // Ensure PageIndexController is available globally
   final pageC = Get.put(PageIndexController(), permanent: true);
 
   runApp(MyApp());

@@ -27,7 +27,7 @@ class UpdateProfileView extends GetView<UpdateProfileController> {
             autocorrect: false,
             controller: controller.nipC,
             decoration: const InputDecoration(
-              labelText: "NIP",
+              labelText: "nip",
               border: OutlineInputBorder(),
             ),
           ),
