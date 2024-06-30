@@ -51,7 +51,7 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -61,7 +61,9 @@ class HomeView extends GetView<HomeController> {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("Belum ada lokasi."),
+                        Text(user["position"] != null
+                            ? "${user['position']}"
+                            : "Belum ada lokasi."),
                       ],
                     ),
                   ],
