@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:presence/app/routes/app_pages.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
 class PageIndexController extends GetxController {
@@ -17,9 +18,13 @@ class PageIndexController extends GetxController {
         Map<String, dynamic> dataResponse = await determinePosition();
         if (dataResponse["error"] != true) {
           Position position = dataResponse["position"];
-          await updatePosition(position);
-          Get.snackbar("${dataResponse['message']}",
-              "${position.latitude} . ${position.longitude}");
+
+          List<Placemark> placemarks = await placemarkFromCoordinates(
+              position.latitude, position.longitude);
+          String address =
+              "${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}";
+          await updatePosition(position, address);
+          Get.snackbar("${dataResponse['message']}", address);
         } else {
           Get.snackbar("Terjadi Kesalahan", dataResponse["message"]);
         }
@@ -34,15 +39,18 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future<void> updatePosition(Position position) async {
+  Future<void> updatePosition(Position position, String address) async {
     String uid = await auth.currentUser!.uid;
 
-    await firestore.collection("pegawai").doc(uid).update({
-      "position": {
-        "lat": position.latitude,
-        "long": position.longitude,
-      }
-    });
+    await firestore.collection("pegawai").doc(uid).update(
+      {
+        "position": {
+          "lat": position.latitude,
+          "long": position.longitude,
+        },
+        "address": address,
+      },
+    );
   }
 
   Future<Map<String, dynamic>> determinePosition() async {
