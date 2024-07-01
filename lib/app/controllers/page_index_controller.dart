@@ -13,7 +13,7 @@ class PageIndexController extends GetxController {
   FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  void changedPage(int i) async {
+  void changePage(int i) async {
     switch (i) {
       case 1:
         Map<String, dynamic> dataResponse = await determinePosition();
@@ -66,7 +66,7 @@ class PageIndexController extends GetxController {
       status = "Di Dalam Area";
     }
 
-    if (snapPresence.docs.length == 0) {
+    if (snapPresence.docs.isEmpty) {
       // belum pernah absen & set absen masuk pertama kalinya
 
       await Get.defaultDialog(

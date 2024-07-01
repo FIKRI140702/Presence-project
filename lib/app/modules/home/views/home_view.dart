@@ -212,7 +212,8 @@ class HomeView extends GetView<HomeController> {
                             color: Colors.grey[200],
                             borderRadius: BorderRadius.circular(20),
                             child: InkWell(
-                              onTap: () => Get.toNamed(Routes.DETAIL_PRESENSI),
+                              onTap: () => Get.toNamed(Routes.DETAIL_PRESENSI,
+                                  arguments: data),
                               borderRadius: BorderRadius.circular(20),
                               child: Container(
                                 padding: const EdgeInsets.all(20),
@@ -278,7 +279,7 @@ class HomeView extends GetView<HomeController> {
           const TabItem(icon: Icons.fingerprint, title: 'Add'),
           const TabItem(icon: Icons.add, title: 'Profile'),
         ],
-        initialActiveIndex: pageC.pageIndex.value,
+        initialActiveIndex: pageC.PageIndex.value,
         onTap: (int i) => pageC.changePage(i),
       ),
     );
