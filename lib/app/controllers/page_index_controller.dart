@@ -26,7 +26,13 @@ class PageIndexController extends GetxController {
               "${placemarks[0].name}, ${placemarks[0].subLocality}, ${placemarks[0].locality}";
           await updatePosition(position, address);
 
-          await presensi(position, address);
+          // cek distance between 2 position
+          double distance = Geolocator.distanceBetween(
+              -7.71107, 109.0210615, position.latitude, position.longitude);
+
+          //presensi
+
+          await presensi(position, address, distance);
 
           Get.snackbar("Berhasil", "Kamu telah mengisi daftar hadir");
         } else {
@@ -43,7 +49,8 @@ class PageIndexController extends GetxController {
     }
   }
 
-  Future<void> presensi(Position position, String address) async {
+  Future<void> presensi(
+      Position position, String address, double distance) async {
     String uid = auth.currentUser!.uid;
 
     CollectionReference<Map<String, dynamic>> colPresence =
@@ -54,7 +61,12 @@ class PageIndexController extends GetxController {
     DateTime now = DateTime.now();
     String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
 
-    print(todayDocID);
+    String status = "Di Luar Area";
+
+    if (distance <= 200) {
+      status = "Di Dalam Area";
+    }
+
     if (snapPresence.docs.isEmpty) {
       //belum pernah absen & set absen masuk
 
@@ -65,7 +77,8 @@ class PageIndexController extends GetxController {
           "lat": position.latitude,
           "long": position.longitude,
           "address": address,
-          "status": "Di dalam area",
+          "status": status,
+          "distance": distance,
         }
       });
     } else {
@@ -87,7 +100,8 @@ class PageIndexController extends GetxController {
               "lat": position.latitude,
               "long": position.longitude,
               "address": address,
-              "status": "Di dalam area",
+              "status": status,
+              "distance": distance,
             }
           });
         }
@@ -100,7 +114,7 @@ class PageIndexController extends GetxController {
             "lat": position.latitude,
             "long": position.longitude,
             "address": address,
-            "status": "Di dalam area",
+            "status": status,
           }
         });
       }
