@@ -44,10 +44,10 @@ class PageIndexController extends GetxController {
   }
 
   Future<void> presensi(Position position, String address) async {
-    String uid = await auth.currentUser!.uid;
+    String uid = auth.currentUser!.uid;
 
     CollectionReference<Map<String, dynamic>> colPresence =
-        await firestore.collection("pegawai").doc(uid).collection("presence");
+        firestore.collection("pegawai").doc(uid).collection("presence");
 
     QuerySnapshot<Map<String, dynamic>> snapPresence = await colPresence.get();
 
@@ -55,7 +55,7 @@ class PageIndexController extends GetxController {
     String todayDocID = DateFormat.yMd().format(now).replaceAll("/", "-");
 
     print(todayDocID);
-    if (snapPresence.docs.length == 0) {
+    if (snapPresence.docs.isEmpty) {
       //belum pernah absen & set absen masuk
 
       await colPresence.doc(todayDocID).set({
@@ -70,6 +70,40 @@ class PageIndexController extends GetxController {
       });
     } else {
       //sudah pernah absen -> cek hari ini sudah absen masuk/keluar blm?
+      DocumentSnapshot<Map<String, dynamic>> todayDoc =
+          await colPresence.doc(todayDocID).get();
+
+      if (todayDoc.exists == true) {
+        // tinggal absen keluar
+        Map<String, dynamic>? dataPresenceToday = todayDoc.data();
+        if (dataPresenceToday?["keluar"]! + null) {
+          // sudah absen masuk & keluar
+          Get.snackbar("Sukses", "Kamu telah absen masuk & keluar.");
+        } else {
+          // sudah absen masuk & kelua
+          await colPresence.doc(todayDocID).update({
+            "keluar": {
+              "date": now.toIso8601String(),
+              "lat": position.latitude,
+              "long": position.longitude,
+              "address": address,
+              "status": "Di dalam area",
+            }
+          });
+        }
+      } else {
+        //absen masuk
+        await colPresence.doc(todayDocID).set({
+          "date": now.toIso8601String(),
+          "masuk": {
+            "date": now.toIso8601String(),
+            "lat": position.latitude,
+            "long": position.longitude,
+            "address": address,
+            "status": "Di dalam area",
+          }
+        });
+      }
     }
   }
 
